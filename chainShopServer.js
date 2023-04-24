@@ -238,6 +238,8 @@ app.get ('/purchases', (req, res)=>{
                 else if(sort=='ValueAsc') purchase=purchase.sort((a,b)=>a.quantity*a.price-b.quantity*b.price);
                 else if(sort=='ValueDesc') purchase=purchase.sort((a,b)=>b.quantity*b.price-a.quantity*a.price);
             }
+            purchase=purchase.map(n=>({purchaseId:n.purchaseid, shopId:n.shopid, productid:n.productid, quantity:n.quantity, price:n.price}))
+
             res.send(purchase);
         }
     });
