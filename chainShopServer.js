@@ -165,6 +165,57 @@ app.put('/products/:id', (req, res)=>{
 });
 
 /****************Purchases***************/
+// app.get ('/purchases', (req, res)=>{
+//     let {products, shop, sort}=req.query;
+//    let sql="Select * from purchases"
+//     client.query(sql, (err, result)=>{
+//         if(err){
+//             res.status(404).send(err);
+//             console.log('err purchases1')
+//         }
+//         else{
+//             let purchases=result.rows;
+//             let sql2="Select * from shops"
+//             client.query(sql2, (err, result2)=>{
+//                 if(err){
+//                     res.status(404).send(err);
+//                     console.log('purchases2');
+//                 }
+//                 else{
+//                     let shops=result2.rows;
+//                     let sql3="Select * from products"
+//                     client.query(sql3, (err, result3)=>{
+//                         if(err){
+//                             res.status(404).send(err);
+//                             console.log('purchases2');
+//                         }
+//                         else{
+//                             let productArr=result3.rows;
+//                             let prodList=products?products.split(','):[];
+                            
+//                             let prods=productArr.filter(n=>prodList.includes(n.productname));
+//                             let prodsIds=prods.map(n=>n.productid)
+//                             console.log(prodsIds, prods, prodList);
+//                             let shopId=(shops.findIndex(n=>n.name==shop))+1;
+//                             if(products)purchases=purchases.filter(n=>prodsIds.includes(n.productid));
+//                             if(shop) purchases=purchases.filter(n=>n.shopid==shopId);
+//                             if(sort){
+//                                 if(sort=='QtyAsc') purchases=purchases.sort((a,b)=>a.quantity-b.quantity);
+//                                 else if(sort=='QtyDesc') purchases=purchases.sort((a,b)=>b.quantity-a.quantity);
+//                                 else if(sort=='ValueAsc') purchases=purchases.sort((a,b)=>a.quantity*a.price-b.quantity*b.price);
+//                                 else if(sort=='ValueDesc') purchases=purchases.sort((a,b)=>b.quantity*b.price-a.quantity*a.price);
+//                             }
+//                             purchases=purchases.map(n=>({purchaseId:n.purchaseid, shopId:n.shopid, productid:n.productid, quantity:n.quantity, price:n.price}))
+//                             res.send(purchases);
+//                             console.log('correct');
+//                         }
+//                     })
+//                 }
+//             })
+//         }
+//     });
+// })
+
 app.get ('/purchases', (req, res)=>{
     let {products, shop, sort}=req.query;
    let sql="Select * from purchases"
@@ -174,44 +225,20 @@ app.get ('/purchases', (req, res)=>{
             console.log('err purchases1')
         }
         else{
-            let purchases=result.rows;
-            let sql2="Select * from shops"
-            client.query(sql2, (err, result2)=>{
-                if(err){
-                    res.status(404).send(err);
-                    console.log('purchases2');
-                }
-                else{
-                    let shops=result2.rows;
-                    let sql3="Select * from products"
-                    client.query(sql3, (err, result3)=>{
-                        if(err){
-                            res.status(404).send(err);
-                            console.log('purchases2');
-                        }
-                        else{
-                            let productArr=result3.rows;
-                            let prodList=products?products.split(','):[];
-                            
-                            let prods=productArr.filter(n=>prodList.includes(n.productname));
-                            let prodsIds=prods.map(n=>n.productid)
-                            console.log(prodsIds, prods, prodList);
-                            let shopId=(shops.findIndex(n=>n.name==shop))+1;
-                            if(products)purchases=purchases.filter(n=>prodsIds.includes(n.productid));
-                            if(shop) purchases=purchases.filter(n=>n.shopid==shopId);
-                            if(sort){
-                                if(sort=='QtyAsc') purchases=purchases.sort((a,b)=>a.quantity-b.quantity);
-                                else if(sort=='QtyDesc') purchases=purchases.sort((a,b)=>b.quantity-a.quantity);
-                                else if(sort=='ValueAsc') purchases=purchases.sort((a,b)=>a.quantity*a.price-b.quantity*b.price);
-                                else if(sort=='ValueDesc') purchases=purchases.sort((a,b)=>b.quantity*b.price-a.quantity*a.price);
-                            }
-                            purchases=purchases.map(n=>({purchaseId:n.purchaseid, shopId:n.shopid, productid:n.productid, quantity:n.quantity, price:n.price}))
-                            res.send(purchases);
-                            console.log('correct');
-                        }
-                    })
-                }
-            })
+            let prodList=products?products.split(','):[];
+            prodsIds=prodList.map(n=>+n.substring(2));
+            let shopIds=shop?shop.substring(2):''
+            let purchase=result.rows;
+            if(products)purchase=purchase.filter(n=>prodsIds.includes(n.productid));
+            if(shop) purchase=purchase.filter(n=>n.shopid==shopIds);
+            
+            if(sort){
+                if(sort=='QtyAsc') purchase=purchase.sort((a,b)=>a.quantity-b.quantity);
+                else if(sort=='QtyDesc') purchase=purchase.sort((a,b)=>b.quantity-a.quantity);
+                else if(sort=='ValueAsc') purchase=purchase.sort((a,b)=>a.quantity*a.price-b.quantity*b.price);
+                else if(sort=='ValueDesc') purchase=purchase.sort((a,b)=>b.quantity*b.price-a.quantity*a.price);
+            }
+            res.send(purchase);
         }
     });
 })
