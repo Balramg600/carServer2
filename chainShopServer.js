@@ -122,7 +122,7 @@ app.get ('/products/:id', (req, res)=>{
         }
         else{
             let arr=result.rows;
-            arr=[{productId:arr[0].productid, productName:arr[0].productname, category:arr[0].category, description:arr[0].description}]
+            arr={productId:arr[0].productid, productName:arr[0].productname, category:arr[0].category, description:arr[0].description}
             res.send(arr);
             console.log('correct');
         }
@@ -151,7 +151,7 @@ app.put('/products/:id', (req, res)=>{
     let body=req.body;
     let id=+req.params.id;
     let params=[body.productName, body.category, body.description, id];
-    let sql="UPDATE products SET  productname=$1, category=$2, description=$3 where productId=$4";
+    let sql="UPDATE products SET  productname=$1, category=$2, description=$3 where productid=$4";
     client.query(sql, params, function(err, result){
         if(err) res.status(404).send(err);
         else {
