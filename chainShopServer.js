@@ -217,7 +217,7 @@ app.get ('/purchases', (req, res)=>{
 })
 
 
-app.get('/purchases/shop/:id', (req, res)=>{
+app.get('/purchases/shops/:id', (req, res)=>{
     sql='Select * from purchases where shopid=$1';
     let id=+req.params.id;
     client.query(sql, [id], (err, result)=>{
@@ -230,7 +230,7 @@ app.get('/purchases/shop/:id', (req, res)=>{
     })
 })
 
-app.get('/purchases/product/:id', (req, res)=>{
+app.get('/purchases/products/:id', (req, res)=>{
     sql='Select * from purchases where productid=$1';
     let id=+req.params.id;
     client.query(sql, [id], (err, result)=>{
